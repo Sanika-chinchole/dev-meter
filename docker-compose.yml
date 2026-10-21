@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: devmeter-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: devmeter
+      POSTGRES_USER: devmeter
+      POSTGRES_PASSWORD: devmeter
+    ports:
+      - "5433:5432"
+    volumes:
+      - devmeter_pgdata:/var/lib/postgresql/data
+volumes:
+  devmeter_pgdata:
