@@ -1,0 +1,12 @@
+# Test-only overrides (classpath:/config/ wins over the main application.yml). Fake values: tests never call Google.
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client-id
+            client-secret: test-client-secret
+devmeter:
+  jwt:
+    secret: test-only-jwt-secret-that-is-at-least-32-bytes-long

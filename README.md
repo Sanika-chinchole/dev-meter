@@ -8,3 +8,8 @@ Track — every AI call logged. Spend by dev, model, project. Budgets + alerts.
 Protect — local scan before send. Blocks secrets, PII, company data. Nothing leaks.
 Enhance — rewrites rough prompts. Local language → clean, structured.
 Optimize — suggests right model per task. Cheap for simple, strong for hard.
+
+## Known gaps (TODO)
+
+- **Auth tokens can't be revoked.** App JWTs live 30 days (`devmeter.jwt.ttl-minutes`) with no refresh or revocation, so a leaked token works until it expires. Fine for the MVP; before onboarding teams, add refresh tokens + revocation and shorten the TTL. See `JwtService`.
+- **Anyone with a Google account can sign in.** Intentional for testers. To restrict to company domains later, check the `hd` claim in `OAuth2LoginSuccessHandler`.

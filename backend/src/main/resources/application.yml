@@ -1,16 +1,41 @@
 spring:
   application:
     name: devmeter-backend
+  config:
+    # Local secrets (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET). Never committed; see .env.example.
+    import: optional:file:.env[.properties]
   datasource:
     url: jdbc:postgresql://localhost:5433/devmeter
     username: devmeter
     password: devmeter
   jpa:
     hibernate:
-      ddl-auto: none   # schema added in Phase 1
+      ddl-auto: validate   # Flyway owns the schema; Hibernate only checks entities match it
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true   # reject unknown JSON fields; keeps prompt text out of /events
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid,email,profile
 server:
   port: 8080
+devmeter:
+  jwt:
+    secret: ${JWT_SECRET:}   # HS256 key, at least 32 bytes; startup fails without it
+    # TODO(auth): tokens live 30 days and cannot be revoked. Before onboarding teams,
+    #  add refresh tokens + revocation (e.g. a token version on User) and shorten this.
+    ttl-minutes: 43200   # 30 days
+  cors:
+    allowed-origins: http://localhost:5173   # React dashboard (comma-separated list); add the real domain when deployed
