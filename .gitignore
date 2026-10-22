@@ -6,7 +6,10 @@ node_modules/
 dist/
 # IDE
 .idea/
-.vscode/
+**/.vscode/*
+# The extension's F5 debug setup is shared.
+!extension/.vscode/launch.json
+!extension/.vscode/tasks.json
 *.iml
 # Env
 .env

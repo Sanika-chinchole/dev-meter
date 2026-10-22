@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: compile",
+      "type": "shell",
+      "command": "npm run compile",
+      // PowerShell's default policy blocks npm.ps1; npm.cmd runs regardless of that policy.
+      "windows": { "command": "npm.cmd run compile" },
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$tsc"]
+    }
+  ]
+}

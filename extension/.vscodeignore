@@ -1,0 +1,9 @@
+# Only out/extension.cjs, package.json and README.md go into the .vsix.
+.vscode/**
+src/**
+node_modules/**
+out/**/*.map
+esbuild.mjs
+tsconfig.json
+.gitignore
+*.vsix

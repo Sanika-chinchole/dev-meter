@@ -11,6 +11,8 @@ class ProviderTest {
         assertThat(Provider.fromValue("anthropic")).isEqualTo(Provider.ANTHROPIC);
         assertThat(Provider.fromValue(" Anthropic ")).isEqualTo(Provider.ANTHROPIC);
         assertThat(Provider.fromValue("OPENAI")).isEqualTo(Provider.OPENAI);
+        assertThat(Provider.fromValue("gemini")).isEqualTo(Provider.GOOGLE);
+        assertThat(Provider.fromValue(" Gemini ")).isEqualTo(Provider.GOOGLE);
     }
 
     @Test

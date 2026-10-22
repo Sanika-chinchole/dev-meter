@@ -1,0 +1,109 @@
+{
+  "name": "devmeter",
+  "displayName": "DevMeter",
+  "description": "See what your AI calls cost. Sends usage metadata only, never prompt or response text.",
+  "version": "0.0.1",
+  "publisher": "sanika-chinchole",
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sanika-chinchole/dev-meter.git"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "type": "module",
+  "main": "./out/extension.cjs",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "devmeter.signIn",
+        "title": "Sign In",
+        "category": "DevMeter"
+      },
+      {
+        "command": "devmeter.signOut",
+        "title": "Sign Out",
+        "category": "DevMeter"
+      },
+      {
+        "command": "devmeter.ask",
+        "title": "Ask AI",
+        "category": "DevMeter"
+      },
+      {
+        "command": "devmeter.status",
+        "title": "Show Status",
+        "category": "DevMeter"
+      },
+      {
+        "command": "devmeter.setApiKey",
+        "title": "Set API Key",
+        "category": "DevMeter"
+      },
+      {
+        "command": "devmeter.clearApiKey",
+        "title": "Remove API Key",
+        "category": "DevMeter"
+      }
+    ],
+    "configuration": {
+      "title": "DevMeter",
+      "properties": {
+        "devmeter.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:8080",
+          "scope": "machine",
+          "markdownDescription": "DevMeter backend URL. Use `localhost`, not `127.0.0.1`: Google sign-in only accepts the address registered in Google Cloud Console. User settings only, so a workspace can't redirect your token elsewhere."
+        },
+        "devmeter.provider": {
+          "type": "string",
+          "default": "anthropic",
+          "enum": ["anthropic", "gemini"],
+          "enumDescriptions": ["Anthropic Claude", "Google Gemini (has a free API tier)"],
+          "description": "AI provider used by DevMeter: Ask AI. Each provider has its own API key."
+        },
+        "devmeter.model": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Model ID used by DevMeter: Ask AI. Leave empty for the provider's default: `claude-sonnet-5-5` (anthropic) or `gemini-3.8-flash` (gemini)."
+        },
+        "devmeter.mockMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Simulate AI calls so no API key is needed. Usage metadata is still sent to the backend."
+        },
+        "devmeter.projectTag": {
+          "type": "string",
+          "default": "",
+          "maxLength": 100,
+          "scope": "resource",
+          "description": "Project name attached to recorded calls. Leave empty to use the workspace folder name. Never taken from prompt text."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "npm run check-types && node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "check-types": "tsc --noEmit",
+    "test": "node --test \"src/**/*.test.ts\"",
+    "package": "vsce package --no-dependencies --skip-license",
+    "vscode:prepublish": "npm run check-types && node esbuild.mjs --production"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/vscode": "~1.90.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.1.0"
+  }
+}

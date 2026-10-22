@@ -35,6 +35,30 @@ class PricingServiceTest {
     }
 
     @Test
+    void currentClaudeModelsUseVerifiedRates() {
+        // Sonnet 5.5: $2 in / $10 out per MTok; Opus 5.5: $4 / $20.
+        assertThat(pricing.computeCost("claude-sonnet-5-5", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("12.000000"));
+        assertThat(pricing.computeCost("claude-opus-5-5", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("24.000000"));
+        // 1200 * $2/M + 300 * $10/M = 0.0024 + 0.003
+        assertThat(pricing.computeCost("claude-sonnet-5-5", 1200, 300)).isEqualTo(new BigDecimal("0.005400"));
+        // A dated variant resolves to the verified entry, not the generic claude-sonnet placeholder.
+        assertThat(pricing.computeCost("claude-sonnet-5-5-20261001", 1_000_000, 0)).isEqualTo(new BigDecimal("2.000000"));
+        assertThat(pricing.isKnownModel("claude-opus-5-5")).isTrue();
+    }
+
+    @Test
+    void geminiModelsUseVerifiedRates() {
+        // 3.8 Flash: $0.75 in / $3.75 out; 2.5 Flash: $0.30 / $2.50; 2.5 Pro: $1.25 / $10.00 per MTok.
+        assertThat(pricing.computeCost("gemini-3.8-flash", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("4.500000"));
+        assertThat(pricing.computeCost("gemini-2.5-flash", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("2.800000"));
+        assertThat(pricing.computeCost("gemini-2.5-pro", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("11.250000"));
+        // Realistic Ask AI call: 11 in, 50 out (incl. thinking) on 3.8 Flash = 0.00000825 + 0.0001875
+        assertThat(pricing.computeCost("gemini-3.8-flash", 11, 50)).isEqualTo(new BigDecimal("0.000196"));
+        // The modelVersion Gemini reports (e.g. "gemini-3.8-flash-001") resolves to the same entry.
+        assertThat(pricing.computeCost("gemini-3.8-flash-001", 1_000_000, 0)).isEqualTo(new BigDecimal("0.750000"));
+    }
+
+    @Test
     void prefixOnlyMatchesAtWordBoundary() {
         assertThat(pricing.isKnownModel("gpt-4omega")).isFalse();
     }

@@ -21,13 +21,24 @@ public class PricingService {
     // PRICE TABLE: the only place rates live. USD per million tokens (input, output).
     // Keys are lowercase model names; suffixed variants ("claude-sonnet-5", "gpt-4o-2024-08-06")
     // resolve to the longest matching key.
-    // TODO verify rates: placeholders based on public list prices, not checked against current pricing.
+    // Verified 2026-10-22 against https://platform.claude.com/docs/en/about-claude/pricing:
+    //   claude-sonnet-5-5, claude-opus-5-5 (base rates; no caching or batch discounts applied).
+    // Verified 2026-10-22 against https://ai.google.dev/gemini-api/docs/pricing (paid tier, text input;
+    //   output includes thinking tokens). The free tier bills $0; DevMeter records list price regardless.
+    //   TODO verify rates: gemini-3.8-flash rises to $1.50 / $7.50 on 2027-01-01. gemini-2.5-pro costs
+    //   $2.50 / $15.00 for prompts over 200k tokens (Ask AI prompts are far smaller).
+    // TODO verify rates: the generic entries below are placeholders based on older public list prices.
     // ---------------------------------------------------------------------------------------------
     private static final Map<String, ModelPrice> PRICES = Map.of(
-            "claude-sonnet", ModelPrice.of("3.00", "15.00"),  // anthropic
-            "claude-haiku", ModelPrice.of("1.00", "5.00"),    // anthropic
-            "gpt-4o", ModelPrice.of("2.50", "10.00"),         // openai
-            "gpt-4o-mini", ModelPrice.of("0.15", "0.60")      // openai
+            "claude-sonnet-5-5", ModelPrice.of("2.00", "10.00"), // anthropic, verified
+            "claude-opus-5-5", ModelPrice.of("4.00", "20.00"),   // anthropic, verified
+            "gemini-3.8-flash", ModelPrice.of("0.75", "3.75"),   // google, verified (through 2026-12-31)
+            "gemini-2.5-flash", ModelPrice.of("0.30", "2.50"),   // google, verified
+            "gemini-2.5-pro", ModelPrice.of("1.25", "10.00"),    // google, verified (prompts <= 200k)
+            "claude-sonnet", ModelPrice.of("3.00", "15.00"),     // anthropic, placeholder
+            "claude-haiku", ModelPrice.of("1.00", "5.00"),       // anthropic, placeholder
+            "gpt-4o", ModelPrice.of("2.50", "10.00"),            // openai, placeholder
+            "gpt-4o-mini", ModelPrice.of("0.15", "0.60")         // openai, placeholder
     );
 
     private static final BigDecimal ONE_MILLION = BigDecimal.valueOf(1_000_000);

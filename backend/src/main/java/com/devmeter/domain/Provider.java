@@ -31,6 +31,9 @@ public enum Provider {
             return OTHER;
         }
         String normalized = raw.trim().toLowerCase(Locale.ROOT);
+        if (normalized.equals("gemini")) {
+            return GOOGLE; // the extension names the provider by product ("gemini"); store the company
+        }
         return Arrays.stream(values())
                 .filter(p -> p.value.equals(normalized))
                 .findFirst()
