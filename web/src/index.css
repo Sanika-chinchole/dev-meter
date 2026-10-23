@@ -1,0 +1,364 @@
+/* DevMeter dashboard: one small stylesheet, light and dark via the system setting. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1c2129;
+  --muted: #5d6673;
+  --border: #e3e6eb;
+  --accent: #2f6fde;
+  --accent-text: #ffffff;
+  --radius: 10px;
+  /* Chart marks. Validated (dataviz validate_palette.js) against each mode's surface. */
+  --data-1: #2f6fde;
+  --grid: #e3e6eb;
+  --hover: rgba(28, 33, 41, 0.06);
+
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171c;
+    --surface: #1d2128;
+    --text: #e6e9ee;
+    --muted: #9aa3ae;
+    --border: #2c323b;
+    --accent: #6a9cf5;
+    --accent-text: #0f1217;
+    --data-1: #5b8fe8; /* #6a9cf5 fails the dark lightness band for marks; this passes all checks */
+    --grid: #2c323b;
+    --hover: rgba(230, 233, 238, 0.07);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+}
+
+h2 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+a {
+  color: var(--accent);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.account span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-email {
+  max-width: 24ch;
+}
+
+/* Narrow screens: keep the name and Sign out; shorten the email further. */
+@media (max-width: 600px) {
+  .account-email {
+    max-width: 12ch;
+  }
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notice {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.app-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.card.narrow {
+  max-width: 420px;
+  margin: 3rem auto;
+}
+
+.grid.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.grid.stats .card {
+  margin-bottom: 0;
+}
+
+.grid.stats + .card {
+  margin-top: 1rem;
+}
+
+.stat {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.button {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.6rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.range {
+  margin: -0.5rem 0 1rem;
+}
+
+.small {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Title + range presets in one row above everything they filter. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.toolbar h1 {
+  margin: 0;
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.segmented button {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.8rem;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.segmented button + button {
+  border-left: 1px solid var(--border);
+}
+
+.segmented button.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+/* Older numbers stay visible, dimmed, while a new range loads. */
+.stale {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem 1.25rem;
+}
+
+/* Recharts: colors come from tokens here (CSS overrides its SVG attributes), so dark mode follows. */
+.daily-chart .cost-bar .recharts-rectangle {
+  fill: var(--data-1);
+}
+
+.daily-chart .recharts-cartesian-grid line {
+  stroke: var(--grid);
+  stroke-width: 1px;
+}
+
+.daily-chart .recharts-cartesian-axis-line {
+  stroke: var(--border);
+}
+
+.daily-chart .recharts-cartesian-axis-tick-value {
+  fill: var(--muted);
+  font-size: 0.8rem;
+}
+
+.daily-chart .recharts-tooltip-cursor {
+  fill: var(--hover);
+}
+
+.chart-tooltip {
+  padding: 0.5rem 0.7rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-toggle {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table th {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.data-table .num {
+  text-align: right;
+}
+
+.model-name {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.85rem;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  cursor: help;
+}
+
+.cost-cell {
+  min-width: 7.5rem;
+}
+
+.share-track {
+  display: block;
+  height: 4px;
+  margin-top: 0.3rem;
+  border-radius: 2px;
+  background: var(--grid);
+}
+
+.share-bar {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--data-1);
+}
+
+.link-button {
+  font: inherit;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.button.secondary {
+  padding: 0.35rem 0.8rem;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
