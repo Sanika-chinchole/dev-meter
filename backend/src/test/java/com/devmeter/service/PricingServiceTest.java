@@ -52,6 +52,7 @@ class PricingServiceTest {
         assertThat(pricing.computeCost("gemini-3.8-flash", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("4.500000"));
         assertThat(pricing.computeCost("gemini-2.5-flash", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("2.800000"));
         assertThat(pricing.computeCost("gemini-2.5-pro", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("11.250000"));
+        assertThat(pricing.computeCost("gemini-3.5-flash-lite", 1_000_000, 1_000_000)).isEqualTo(new BigDecimal("2.800000"));
         // Realistic Ask AI call: 11 in, 50 out (incl. thinking) on 3.8 Flash = 0.00000825 + 0.0001875
         assertThat(pricing.computeCost("gemini-3.8-flash", 11, 50)).isEqualTo(new BigDecimal("0.000196"));
         // The modelVersion Gemini reports (e.g. "gemini-3.8-flash-001") resolves to the same entry.

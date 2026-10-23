@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import type { Auth } from './auth/auth.ts';
 import { postEvent, type PostEventResult } from './backendApi.ts';
 import { buildEventPayload, type CallMetadata } from './events.ts';
-import { backendUrl } from './settings.ts';
+import { backendUrl, logSentEvents } from './settings.ts';
 
 /**
  * Sends call metadata to POST /events in the background. Never blocks or fails the AI command.
@@ -34,6 +34,10 @@ export class Capture {
   }
 
   private async send(payload: CallMetadata, token: string, note: string): Promise<void> {
+    if (logSentEvents()) {
+      // Transparency: the exact body that leaves the machine (metadata only, never prompt or response text).
+      this.output.appendLine(`→ POST /events ${JSON.stringify(payload)}`);
+    }
     const result = await postEvent(backendUrl(), token, payload);
     this.report(result, note);
     if (result.kind === 'unauthorized') {

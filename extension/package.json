@@ -78,6 +78,11 @@
           "default": true,
           "description": "Simulate AI calls so no API key is needed. Usage metadata is still sent to the backend."
         },
+        "devmeter.logSentEvents": {
+          "type": "boolean",
+          "default": false,
+          "description": "Print every usage event sent to the backend in the DevMeter output panel, so you can see exactly what leaves your machine (metadata only, never prompt text)."
+        },
         "devmeter.projectTag": {
           "type": "string",
           "default": "",

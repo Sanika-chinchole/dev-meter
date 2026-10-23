@@ -6,7 +6,6 @@ import type { ApiKeys } from './apiKeys.ts';
 import { ask, MAX_PROMPT_CHARS, previewOf } from './ask.ts';
 import type { Auth } from './auth/auth.ts';
 import type { Capture } from './capture.ts';
-import { resolveProjectTag } from './projectTag.ts';
 import { normalizeProvider } from './providerKeys.ts';
 import { scan } from './scan.ts';
 import * as settings from './settings.ts';
@@ -85,7 +84,7 @@ export async function askCommand({ auth, apiKeys, capture, output }: AskCommandD
       inputTokens: response.inputTokens,
       outputTokens: response.outputTokens,
       latencyMs,
-      projectTag: currentProjectTag(),
+      projectTag: settings.currentProjectTag(),
     }, token);
   } catch (error) {
     const failure: CallFailure = real && !mock
@@ -125,11 +124,4 @@ async function readPrompt(): Promise<string | undefined> {
     ignoreFocusOut: true,
   });
   return typed?.trim() || undefined;
-}
-
-/** devmeter.projectTag, else the folder of the active file (or the first folder), else null. Never prompt text. */
-function currentProjectTag(): string | null {
-  const activeUri = vscode.window.activeTextEditor?.document.uri;
-  const folder = (activeUri && vscode.workspace.getWorkspaceFolder(activeUri)) ?? vscode.workspace.workspaceFolders?.[0];
-  return resolveProjectTag(settings.projectTag(folder), folder?.name) ?? null;
 }

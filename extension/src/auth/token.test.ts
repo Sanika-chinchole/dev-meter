@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { isExpired, tokenExpiry } from './token.ts';
+import { isExpired, tokenEmail, tokenExpiry } from './token.ts';
 
 function jwtWith(payload: object): string {
   const encode = (value: object) => Buffer.from(JSON.stringify(value)).toString('base64url');
@@ -18,6 +18,12 @@ test('valid until shortly before exp', () => {
   assert.equal(isExpired(jwtWith({ exp: seconds(NOW) + 3600 }), NOW), false);
   assert.equal(isExpired(jwtWith({ exp: seconds(NOW) + 10 }), NOW), true); // inside the 30 s skew
   assert.equal(isExpired(jwtWith({ exp: seconds(NOW) - 60 }), NOW), true);
+});
+
+test('reads the email claim', () => {
+  assert.equal(tokenEmail(jwtWith({ email: 'ada@example.com', exp: 1 })), 'ada@example.com');
+  assert.equal(tokenEmail(jwtWith({ sub: 'x' })), undefined);
+  assert.equal(tokenEmail('not-a-jwt'), undefined);
 });
 
 test('malformed or exp-less tokens count as expired', () => {

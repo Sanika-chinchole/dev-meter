@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import { BackendError, buildLoginUrl, fetchMe } from '../backendApi.ts';
 import { backendUrl } from '../settings.ts';
 import { type LoopbackSession, startLoopback } from './loopback.ts';
-import { isExpired } from './token.ts';
+import type { SessionState } from '../status.ts';
+import { isExpired, tokenEmail, tokenExpiry } from './token.ts';
 
 const TOKEN_KEY = 'devmeter.jwt';
 const SIGN_IN_TIMEOUT_MS = 2 * 60_000;
@@ -80,6 +81,18 @@ export class Auth {
     }
     await this.secrets.delete(TOKEN_KEY);
     void vscode.window.showInformationMessage('DevMeter: Signed out on this machine.');
+  }
+
+  /** Sign-in state from the stored token, read locally: no network, no prompts. */
+  async session(): Promise<SessionState> {
+    const token = await this.secrets.get(TOKEN_KEY);
+    if (!token) {
+      return { state: 'signed-out' };
+    }
+    if (isExpired(token)) {
+      return { state: 'expired' };
+    }
+    return { state: 'signed-in', email: tokenEmail(token), expires: tokenExpiry(token)! };
   }
 
   /** The stored token, or undefined (after offering Sign In) if it is missing or expired. */

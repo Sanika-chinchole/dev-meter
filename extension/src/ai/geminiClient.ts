@@ -22,14 +22,22 @@ const BLOCKED_FINISH_REASONS = new Set(['SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLI
 export class GeminiError extends Error {
   readonly kind: 'cancelled' | 'timeout' | 'unreachable' | 'api';
   readonly status: number | undefined;
+  /** e.g. "UNAVAILABLE" from error.status */
+  readonly apiStatus: string | undefined;
   /** e.g. "API_KEY_INVALID" from error.details[].reason */
   readonly reason: string | undefined;
 
-  constructor(kind: GeminiError['kind'], message: string, status?: number, reason?: string) {
+  constructor(kind: GeminiError['kind'], message: string, status?: number, apiStatus?: string, reason?: string) {
     super(message);
     this.kind = kind;
     this.status = status;
+    this.apiStatus = apiStatus;
     this.reason = reason;
+  }
+
+  /** "HTTP 503 UNAVAILABLE: <Google's message>". Google's error text never echoes the prompt. */
+  get detail(): string {
+    return `HTTP ${this.status}${this.apiStatus ? ` ${this.apiStatus}` : ''}: ${this.message}`;
   }
 }
 
@@ -124,7 +132,7 @@ async function apiError(response: Response): Promise<GeminiError> {
     // Non-JSON error body; status alone is enough.
   }
   const reason = body.error?.details?.find((detail) => detail.reason)?.reason;
-  return new GeminiError('api', body.error?.message ?? `HTTP ${response.status}`, response.status, reason);
+  return new GeminiError('api', body.error?.message ?? 'no error message', response.status, body.error?.status, reason);
 }
 
 /** User-facing description of a failed Gemini call. */
@@ -152,10 +160,10 @@ export function describeGeminiFailure(error: unknown, model: string): CallFailur
     return fail(`Model "${model}" was not found. Check the devmeter.model setting.`);
   }
   if (error.status === 429) {
-    return fail('Gemini rate limit or free-tier quota reached. Try again shortly.');
+    return fail(`Gemini rate limit or free-tier quota reached. Try again shortly. (${error.detail})`);
   }
   if (error.status !== undefined && error.status >= 500) {
-    return fail('Gemini is overloaded or having problems. Try again shortly.');
+    return fail(`Gemini is overloaded or having problems. Try again shortly, or try another model. (${error.detail})`);
   }
-  return fail(`Gemini rejected the request: ${error.message}`);
+  return fail(`Gemini rejected the request. (${error.detail})`);
 }

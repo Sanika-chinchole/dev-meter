@@ -3,6 +3,7 @@ import { ApiKeys } from './apiKeys.ts';
 import { askCommand } from './askCommand.ts';
 import { Auth } from './auth/auth.ts';
 import { Capture } from './capture.ts';
+import { statusCommand } from './statusCommand.ts';
 
 // No activationEvents in package.json: since VS Code 1.74, contributing a command
 // activates the extension when that command runs.
@@ -20,8 +21,7 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('devmeter.setApiKey', () => apiKeys.set()),
     vscode.commands.registerCommand('devmeter.clearApiKey', () => apiKeys.clear()),
     vscode.commands.registerCommand('devmeter.ask', () => askCommand({ auth, apiKeys, capture, output })),
-    vscode.commands.registerCommand('devmeter.status', () =>
-      vscode.window.showInformationMessage('DevMeter: Show Status is not implemented yet.')),
+    vscode.commands.registerCommand('devmeter.status', () => statusCommand(auth, apiKeys, output)),
   );
 }
 

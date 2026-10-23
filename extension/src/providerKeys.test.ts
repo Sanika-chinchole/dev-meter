@@ -12,7 +12,8 @@ test('no warning for keys that look right', () => {
   assert.equal(keyFormatWarning('anthropic', 'sk-ant-api03-abc'), undefined);
   assert.equal(keyFormatWarning('openai', 'sk-proj-abc'), undefined);
   assert.equal(keyFormatWarning('gemini', 'AIzaSyExample'), undefined);
-  assert.match(keyFormatWarning('gemini', 'sk-ant-abc')!, /start with "AIza"/);
+  assert.equal(keyFormatWarning('gemini', 'AQ.ExampleKeyOnly'), undefined);
+  assert.match(keyFormatWarning('gemini', 'sk-ant-abc')!, /start with "AIza" or "AQ\."/);
   assert.equal(keyFormatWarning('some-new-lab', 'anything'), undefined);
 });
 

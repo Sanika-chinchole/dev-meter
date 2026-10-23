@@ -1,8 +1,8 @@
 /** Expected key prefixes, used only to warn about a likely typo or wrong-provider key. */
-const KEY_PREFIXES: Record<string, string> = {
-  anthropic: 'sk-ant-',
-  gemini: 'AIza',
-  openai: 'sk-',
+const KEY_PREFIXES: Record<string, string[]> = {
+  anthropic: ['sk-ant-'],
+  gemini: ['AIza', 'AQ.'], // classic API keys, and the newer AI Studio "auth keys"
+  openai: ['sk-'],
 };
 
 export function normalizeProvider(provider: string): string {
@@ -22,9 +22,9 @@ export function keyFormatWarning(provider: string, key: string): string | undefi
   if (/\s/.test(key)) {
     return 'The key contains spaces or line breaks.';
   }
-  const prefix = KEY_PREFIXES[normalizeProvider(provider)];
-  if (prefix && !key.startsWith(prefix)) {
-    return `${normalizeProvider(provider)} keys usually start with "${prefix}".`;
+  const prefixes = KEY_PREFIXES[normalizeProvider(provider)];
+  if (prefixes && !prefixes.some((prefix) => key.startsWith(prefix))) {
+    return `${normalizeProvider(provider)} keys usually start with ${prefixes.map((p) => `"${p}"`).join(' or ')}.`;
   }
   return undefined;
 }

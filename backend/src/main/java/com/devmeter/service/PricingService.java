@@ -33,6 +33,7 @@ public class PricingService {
             "claude-sonnet-5-5", ModelPrice.of("2.00", "10.00"), // anthropic, verified
             "claude-opus-5-5", ModelPrice.of("4.00", "20.00"),   // anthropic, verified
             "gemini-3.8-flash", ModelPrice.of("0.75", "3.75"),   // google, verified (through 2026-12-31)
+            "gemini-3.5-flash-lite", ModelPrice.of("0.30", "2.50"), // google, verified
             "gemini-2.5-flash", ModelPrice.of("0.30", "2.50"),   // google, verified
             "gemini-2.5-pro", ModelPrice.of("1.25", "10.00"),    // google, verified (prompts <= 200k)
             "claude-sonnet", ModelPrice.of("3.00", "15.00"),     // anthropic, placeholder

@@ -104,8 +104,8 @@ test('maps API errors to user messages', async () => {
   assert.deepEqual(await failureFor('key-invalid'), { kind: 'error', message: 'Your Gemini API key was rejected.', offerSetApiKey: true });
   assert.deepEqual(await failureFor('key-401'), { kind: 'error', message: 'Your Gemini API key was rejected.', offerSetApiKey: true });
   assert.match(JSON.stringify(await failureFor('key-404')), /not found\. Check the devmeter\.model setting/);
-  assert.match(JSON.stringify(await failureFor('key-429')), /rate limit or free-tier quota/);
-  assert.match(JSON.stringify(await failureFor('key-500')), /overloaded or having problems/);
+  assert.match(JSON.stringify(await failureFor('key-429')), /rate limit or free-tier quota.*HTTP 429 RESOURCE_EXHAUSTED: RESOURCE_EXHAUSTED from fake server/);
+  assert.match(JSON.stringify(await failureFor('key-500')), /overloaded or having problems.*HTTP 500 INTERNAL: INTERNAL from fake server/);
   assert.equal(attempts.get('key-429'), 3); // retried twice before giving up
 });
 

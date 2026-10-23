@@ -8,7 +8,7 @@ latency, project tag) and sends it to your DevMeter backend. Prompt and response
 - **DevMeter: Sign In**: sign in with Google through your browser
 - **DevMeter: Sign Out**
 - **DevMeter: Ask AI**: run one AI request and record its usage
-- **DevMeter: Show Status**: who is signed in, and current settings
+- **DevMeter: Show Status**: who is signed in, backend, mode, provider/model, whether an API key is set (never the key)
 - **DevMeter: Set API Key** / **Remove API Key**: your provider API key, needed only when mock mode is off.
   Stored per provider in VS Code's secret storage, never in settings or logs.
 
@@ -21,6 +21,7 @@ latency, project tag) and sends it to your DevMeter backend. Prompt and response
 | `devmeter.model` | *(empty)* | Empty uses the provider default: `claude-sonnet-5-5` or `gemini-3.8-flash`. |
 | `devmeter.mockMode` | `true` | Simulated AI calls; no API key needed. Turn off for real calls to the selected provider. |
 | `devmeter.projectTag` | *(empty)* | Empty uses the workspace folder name. Never taken from prompt text. |
+| `devmeter.logSentEvents` | `false` | Prints each usage event sent to the backend in the DevMeter panel, to see exactly what leaves your machine. |
 
 ## Development
 
